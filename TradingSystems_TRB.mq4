@@ -3,6 +3,7 @@
 //|                                               Y3 Trading Systems |
 //|                                                     www.y3web.it |
 //+------------------------------------------------------------------+
+// EURUSD M5
 #property copyright "Y3 Trading Systems"
 #property link      "www.y3web.it"
 #property version   "1.00"
