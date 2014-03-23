@@ -68,16 +68,18 @@ void OnTick()
 int paramD1()
   {
    int i;
-   double bx, by, sx, sy;
+   double bx, by, sx, sy, upperMA, lowerMA;
 
    entreeBuy  = false;
    sortieBuy  = false;
    entreeSell = false;
    sortieSell = false;
-
+   
+   upperMA = iMA(NULL,0,21,0,MODE_EMA,PRICE_HIGH,0);
+   lowerMA = iMA(NULL,0,21,0,MODE_EMA,PRICE_LOW,0);
 
    // BUY ORDER OPEN CONTDITIONS =================================
-   if ( MarketInfo(nomIndice,MODE_BID) > iMA(NULL,0,21,0,MODE_EMA,PRICE_CLOSE,0) ) entreeBuy=true;
+   if ( MarketInfo(nomIndice,MODE_BID) > upperMA ) entreeBuy=true;
 
    // BUY ODRDER CLOSE CONDITIONS ================================
    if(OrderSelect(ticketBuy, SELECT_BY_TICKET)==true)
@@ -99,7 +101,7 @@ int paramD1()
 
 
    // SELL ORDER OPEN CONTDITIONS =================================
-   if (MarketInfo(nomIndice,MODE_BID) < iMA(NULL,0,21,0,MODE_EMA,PRICE_CLOSE,0)) entreeSell=true;
+   if (MarketInfo(nomIndice,MODE_BID) < lowerMA ) entreeSell=true;
 
 
    // SELL ODRDER CLOSE CONDITIONS ================================
