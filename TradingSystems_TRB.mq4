@@ -10,7 +10,7 @@
 
 input double POWER=0.1;
 input string SIGNATURE="Y3-TRB";
-input int distanceFromMA = 10;
+input int distanceFromMA = 31;
 input bool FiveDigitBroker = true;
 
 string nomIndice= "EURUSD";
@@ -22,6 +22,7 @@ bool entreeSell = false;
 bool sortieSell = false;
 int ticketBuy;
 int ticketSell;
+int spread;
 
 double dfMA = 10;
 
@@ -30,6 +31,8 @@ double dfMA = 10;
 //+------------------------------------------------------------------+
 int OnInit()
   {
+   nomIndice = Symbol();
+   
    if (FiveDigitBroker == true)
       {
          dfMA = distanceFromMA * 10 * Point;
@@ -66,7 +69,7 @@ void OnTick()
 int paramD1()
   {
    int i;
-   double bx, by, sx, sy, upperMA, lowerMA, medianMA;
+   double bx, by, sx, sy, upperMA, lowerMA;
 
    entreeBuy  = false;
    sortieBuy  = false;
@@ -74,17 +77,17 @@ int paramD1()
    sortieSell = false;
    
    upperMA = iMA(NULL,0,21,0,MODE_EMA,PRICE_HIGH,0);
-   medianMA = iMA(NULL,0,21,0,MODE_EMA,PRICE_MEDIAN,0);
    lowerMA = iMA(NULL,0,21,0,MODE_EMA,PRICE_LOW,0);
+   spread = SymbolInfoInteger(nomIndice,SYMBOL_SPREAD);
 
    // BUY ORDER OPEN CONTDITIONS =================================
-   if ( MarketInfo(nomIndice,MODE_BID) > upperMA + dfMA ) entreeBuy=true;
+   if ( MarketInfo(nomIndice,MODE_BID)>upperMA+dfMA    &&     MarketInfo(nomIndice,MODE_BID)<upperMA+dfMA+(100*Point)    &&    spread<50 ) entreeBuy=true;
 
    // BUY ODRDER CLOSE CONDITIONS ================================
    if(OrderSelect(ticketBuy, SELECT_BY_TICKET)==true)
      { 
 
-         if( MarketInfo(nomIndice,MODE_BID) < medianMA ) sortieBuy=true;
+         if( MarketInfo(nomIndice,MODE_BID) < upperMA ) sortieBuy=true;
      }
 
 
@@ -92,14 +95,14 @@ int paramD1()
 
 
    // SELL ORDER OPEN CONTDITIONS =================================
-   if (MarketInfo(nomIndice,MODE_BID) < lowerMA - dfMA ) entreeSell=true;
+   if (MarketInfo(nomIndice,MODE_BID)<lowerMA-dfMA    &&     MarketInfo(nomIndice,MODE_BID)>lowerMA-dfMA-(100*Point)     &&      spread<50 ) entreeSell=true;
 
 
    // SELL ODRDER CLOSE CONDITIONS ================================
    if(OrderSelect(ticketSell, SELECT_BY_TICKET)==true)
       { 
 
-         if( MarketInfo(nomIndice,MODE_ASK) > medianMA ) sortieSell=true;
+         if( MarketInfo(nomIndice,MODE_ASK) > lowerMA ) sortieSell=true;
       }
 
 
@@ -187,8 +190,9 @@ int commentaire()
 
    Comment("\n +--------------------------------------------------------+\n EXPERT : ",nomIndice,
            "\n DATE : ",dj,
-
+         
            "\n +--------------------------------------------------------+\n   ",
+           "\n SPREAD      : ",spread,
            "\n TICKET BUY  : ",ticketBuy,
            "\n TICKET SELL : ",ticketSell,
            "\n +--------------------------------------------------------+\n ");
