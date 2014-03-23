@@ -10,8 +10,7 @@
 
 input double POWER=0.1;
 input string SIGNATURE="Y3-TRB";
-input int targetDistance = 20;
-input int StopLossDistance = 10;
+input int distanceFromMA = 10;
 input bool FiveDigitBroker = true;
 
 string nomIndice= "EURUSD";
@@ -24,8 +23,8 @@ bool sortieSell = false;
 int ticketBuy;
 int ticketSell;
 
-int tpd = 20;
-int sld = 10;
+double dfMA = 10;
+
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
 //+------------------------------------------------------------------+
@@ -33,13 +32,12 @@ int OnInit()
   {
    if (FiveDigitBroker == true)
       {
-      tpd = targetDistance*10;
-      sld = StopLossDistance*10;
+         dfMA = distanceFromMA * 10 * Point;
+         Print("dfMA = ",dfMA, "distanceFromMA = ",distanceFromMA);
       }
    else
       {
-      tpd = targetDistance;
-      sld = StopLossDistance;
+         dfMA = distanceFromMA * Point;
       }
    return(0); //return(INIT_SUCCEEDED);
   }
@@ -68,7 +66,7 @@ void OnTick()
 int paramD1()
   {
    int i;
-   double bx, by, sx, sy, upperMA, lowerMA;
+   double bx, by, sx, sy, upperMA, lowerMA, medianMA;
 
    entreeBuy  = false;
    sortieBuy  = false;
@@ -76,24 +74,17 @@ int paramD1()
    sortieSell = false;
    
    upperMA = iMA(NULL,0,21,0,MODE_EMA,PRICE_HIGH,0);
+   medianMA = iMA(NULL,0,21,0,MODE_EMA,PRICE_MEDIAN,0);
    lowerMA = iMA(NULL,0,21,0,MODE_EMA,PRICE_LOW,0);
 
    // BUY ORDER OPEN CONTDITIONS =================================
-   if ( MarketInfo(nomIndice,MODE_BID) > upperMA ) entreeBuy=true;
+   if ( MarketInfo(nomIndice,MODE_BID) > upperMA + dfMA ) entreeBuy=true;
 
    // BUY ODRDER CLOSE CONDITIONS ================================
    if(OrderSelect(ticketBuy, SELECT_BY_TICKET)==true)
-      { 
-         bx = OrderOpenPrice();
-         by = bx;
-         bx = bx -sld*Point; //Stop Loss
-         by = by +tpd*Point; //target
-      
-         if( MarketInfo(nomIndice,MODE_BID) < bx || MarketInfo(nomIndice,MODE_BID) > by ) 
-         {
-            sortieBuy=true;
-            Print("OpenPrice:",OrderOpenPrice()," bx:",bx," by:",by," bid:",MarketInfo(nomIndice,MODE_BID));
-         }
+     { 
+
+         if( MarketInfo(nomIndice,MODE_BID) < medianMA ) sortieBuy=true;
      }
 
 
@@ -101,18 +92,14 @@ int paramD1()
 
 
    // SELL ORDER OPEN CONTDITIONS =================================
-   if (MarketInfo(nomIndice,MODE_BID) < lowerMA ) entreeSell=true;
+   if (MarketInfo(nomIndice,MODE_BID) < lowerMA - dfMA ) entreeSell=true;
 
 
    // SELL ODRDER CLOSE CONDITIONS ================================
    if(OrderSelect(ticketSell, SELECT_BY_TICKET)==true)
       { 
-         sx = OrderOpenPrice();
-         sy = sx;
-         sx = sx +sld*Point; //Stop Loss
-         sy = sy -tpd*Point; //target
 
-         if( MarketInfo(nomIndice,MODE_ASK) > sx || MarketInfo(nomIndice,MODE_ASK) < sy ) sortieSell=true;    
+         if( MarketInfo(nomIndice,MODE_ASK) > medianMA ) sortieSell=true;
       }
 
 
