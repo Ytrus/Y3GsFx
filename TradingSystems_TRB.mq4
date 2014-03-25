@@ -10,7 +10,8 @@
 #property strict
 
 input double POWER=0.1;
-input string SIGNATURE="Y3-TRB";
+input int SIGNATURE=3132;
+input string COMMENT="Y3-TRB";
 input int distanceFromMA = 31;
 input bool FiveDigitBroker = true;
 
@@ -69,8 +70,8 @@ void OnTick()
 
 int paramD1()
   {
-   int i;
-   double bx, by, sx, sy, upperMA, lowerMA;
+
+   double upperMA, lowerMA;
 
    entreeBuy  = false;
    sortieBuy  = false;
@@ -125,7 +126,7 @@ int ouvertureBuy()
       takeprofit = NormalizeDouble(takeprofit,MarketInfo(nomIndice,MODE_DIGITS));
 
 
-      ticketBuy=OrderSend(nomIndice,OP_BUY,POWER,MarketInfo(nomIndice,MODE_ASK),8,stoploss,takeprofit,"POWER",SIGNATURE,0,MediumBlue);
+      ticketBuy=OrderSend(nomIndice,OP_BUY,POWER,MarketInfo(nomIndice,MODE_ASK),8,stoploss,takeprofit,COMMENT,SIGNATURE,0,MediumBlue);
 
       if(ticketBuy>0)tradeBuy=true;
 
@@ -160,7 +161,7 @@ int ouvertureSell()
       stoploss   = NormalizeDouble(stoploss,MarketInfo(nomIndice,MODE_DIGITS));
       takeprofit = NormalizeDouble(takeprofit,MarketInfo(nomIndice,MODE_DIGITS));
 
-      ticketSell=OrderSend(nomIndice,OP_SELL,POWER,MarketInfo(nomIndice,MODE_BID),8,stoploss,takeprofit,"POWER",SIGNATURE,0,MediumBlue);
+      ticketSell=OrderSend(nomIndice,OP_SELL,POWER,MarketInfo(nomIndice,MODE_BID),8,stoploss,takeprofit,COMMENT,SIGNATURE,0,MediumBlue);
 
       if(ticketSell>0)tradeSell=true;
      }
