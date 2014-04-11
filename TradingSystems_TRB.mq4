@@ -78,8 +78,8 @@ int paramD1()
    entreeSell = false;
    sortieSell = false;
    
-   upperMA = iMA(NULL,0,21,0,MODE_EMA,PRICE_HIGH,0);
-   lowerMA = iMA(NULL,0,21,0,MODE_EMA,PRICE_LOW,0);
+   upperMA = iMA(NULL,0,21,0,MODE_EMA,PRICE_HIGH,1);
+   lowerMA = iMA(NULL,0,21,0,MODE_EMA,PRICE_LOW,1);
    spread = SymbolInfoInteger(nomIndice,SYMBOL_SPREAD);
 
    // BUY ORDER OPEN CONTDITIONS =================================

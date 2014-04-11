@@ -96,7 +96,7 @@ int paramD1()
      { 
 
          if ( Open[0] > longEMA && Close[0] <= longEMA) sortieBuy=true;
-         if ( Close[1] < longEMA )sortieBuy=true; //se compro ed alla fine della barra sono sotto, lo stop non funziona.
+         //if (iBarShift(NULL,0,OrderOpenTime(),false) == 1 && Close[1] < longEMA) sortieBuy=true; //se compro ed alla fine della barra sono sotto, lo stop non funziona.
          //if ( MarketInfo(nomIndice,MODE_ASK) > OrderOpenPrice()+300*Point) sortieBuy=true;
      }
 
@@ -113,7 +113,7 @@ int paramD1()
       { 
 
          if( Open[0] < longEMA && Close[0] >= longEMA ) sortieSell=true;
-         if ( Close[1] > longEMA )sortieBuy=true; //se compro ed alla fine della barra sono sotto, lo stop non funziona.
+         //if (iBarShift(NULL,0,OrderOpenTime(),false) == 1 && Close[1] > longEMA) sortieSell=true; //se compro ed alla fine della barra sono sotto, lo stop non funziona.
          //if ( MarketInfo(nomIndice,MODE_BID) < OrderOpenPrice()-300*Point) sortieSell=true;
       }
 
