@@ -12,7 +12,7 @@
 input double POWER=0.1;
 input int SIGNATURE=3132;
 input string COMMENT="Y3-TRB";
-input int distanceFromMA = 31;
+input int distanceFromMA = 40;
 input bool FiveDigitBroker = true;
 
 string nomIndice= "EURUSD";
